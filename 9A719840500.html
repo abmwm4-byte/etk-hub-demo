@@ -1444,7 +1444,7 @@ POSITIONS.forEach((p, i) => {
   tr.className = 'pos-row' + (p.cur ? ' cur' : ''); tr.dataset.i = i;
   const badge = p.status === 'old'
     ? `<span class="badge old sm">не заказать${p.repl ? ' · замена: ' + p.repl : ''}</span>`
-    : (p.cur ? '<span class="badge ok sm">✓ товар этой страницы</span>' : '<span class="badge ok sm">можно заказать</span>');
+    : (p.cur ? '<span class="badge ok sm">✓ товар этой страницы</span>' : '<span class="badge ok sm">актуальный артикул</span>');
   tr.innerHTML = `<td><b>${p.pos}</b></td>
     <td class="art ${p.status === 'old' ? 'dim' : ''}">${p.art}</td>
     <td class="pname">${p.name}</td><td class="pr">${p.price}</td><td>${badge}</td>
