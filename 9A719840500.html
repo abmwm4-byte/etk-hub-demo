@@ -1381,8 +1381,8 @@ const PRICE_OE = 3210;
 const schemeImgElem = document.getElementById('schemeImg');
 if (schemeImgElem && window.Panzoom) {
   const pz = Panzoom(schemeImgElem, {
-    maxScale: 5, minScale: 1, step: 0.3, contain: 'outside',
-    cursor: 'grab', excludeClass: 'hotspot',
+    maxScale: 5, minScale: 1, step: 0.3,
+    panOnlyWhenZoomed: true, cursor: 'grab', excludeClass: 'hotspot',
   });
   const slideEl = schemeImgElem.closest('.slide');
   slideEl.addEventListener('wheel', pz.zoomWithWheel, { passive: false });
