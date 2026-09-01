@@ -143,11 +143,13 @@
 
   .scheme-img { position: relative; height: 100%; }
   .scheme-img img { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
-  .hotspot { position: absolute; transform: translate(-50%, -50%); min-width: 24px; height: 24px; border-radius: 12px;
+  .hotspot { position: absolute; transform: translate(-50%, -50%); min-width: var(--hs, 24px); height: var(--hs, 24px);
+    border-radius: calc(var(--hs, 24px) / 2);
     background: var(--accent); color: #fff; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.25);
-    font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; padding: 0 6px;
-    cursor: pointer; transition: all .15s ease; font-family: inherit; z-index: 2; white-space: nowrap; }
-  .hotspot:hover, .hotspot.active { background: var(--ink2); transform: translate(-50%,-50%) scale(1.15); z-index: 3; border-color: var(--ink2); }
+    font-weight: 700; font-size: calc(var(--hs, 24px) * 0.44); display: flex; align-items: center; justify-content: center;
+    padding: 0 calc(var(--hs, 24px) * 0.3);
+    cursor: pointer; transition: background .15s ease; font-family: inherit; z-index: 2; white-space: nowrap; }
+  .hotspot:hover, .hotspot.active { background: var(--ink2); z-index: 3; border-color: var(--ink2); }
   .tip { position: absolute; transform: translate(-50%, 0); background: var(--ink2); color: #fff; padding: 8px 12px; border-radius: 8px;
     font-size: 12.5px; font-weight: 600; white-space: normal; max-width: 240px; width: max-content; text-align: left; line-height: 1.35;
     pointer-events: none; opacity: 0; transition: opacity .12s; z-index: 4; box-shadow: var(--shadow-soft); }
@@ -248,7 +250,7 @@
     .search { display: none; }
     .vin { flex-direction: column; }
     .vin button { padding: 12px; }
-    .hotspot { min-width: 20px; height: 20px; font-size: 10px; padding: 0 4px; border-width: 1.5px; }
+    .hotspot { border-width: 1.5px; }
     .header-in { gap: 12px; }
     .dock-art, .dock-soc { display: none; }
 
@@ -334,12 +336,12 @@
 
 <div class="wrap">
 
-  <nav class="crumbs"><a href="#">Главная</a> <span class="sep">/</span> <a href="#">Каталог</a> <span class="sep">/</span> <a href="#">BMW</a> <span class="sep">/</span> <a href="#">Система смазки</a> <span class="sep">/</span> <span>Масляный фильтр B57</span></nav>
+  <nav class="crumbs"><a href="#">Главная</a> <span class="sep">/</span> <a href="#">Каталог</a> <span class="sep">/</span> <a href="#">Porsche</a> <span class="sep">/</span> <span>Фильтр. эл-т масляного фильтра</span></nav>
 
   <h1>Фильтр. эл-т масляного фильтра Porsche</h1>
   <div class="sub">
     <span class="sub-text">Оригинальный артикул <b>9A719840500</b></span>
-    <span class="badge oe">Оригинал BMW</span>
+    <span class="badge oe">Оригинал Porsche</span>
     <span class="badge ok">✓ Актуальный артикул</span>
   </div>
 
@@ -1381,7 +1383,7 @@ const PRICE_OE = 3210;
 const schemeImgElem = document.getElementById('schemeImg');
 if (schemeImgElem && window.Panzoom) {
   const pz = Panzoom(schemeImgElem, {
-    maxScale: 5, minScale: 1, step: 0.3,
+    maxScale: 5, minScale: 1, step: 0.12, animate: true,
     panOnlyWhenZoomed: true, cursor: 'grab', excludeClass: 'hotspot',
   });
   const slideEl = schemeImgElem.closest('.slide');
@@ -1392,6 +1394,17 @@ if (schemeImgElem && window.Panzoom) {
   document.getElementById('zoomOut')?.addEventListener('click', () => pz.zoomOut());
   document.getElementById('zoomReset')?.addEventListener('click', () => pz.reset());
 }
+
+/* размер хотспотов под масштаб показанной схемы */
+function fitHotspots() {
+  if (!schemeImgElem) return;
+  const w = schemeImgElem.clientWidth;
+  if (!w) return;
+  const hs = Math.round(Math.max(16, Math.min(28, w / SCHEME_W * 26)));
+  schemeImgElem.style.setProperty('--hs', hs + 'px');
+}
+fitHotspots();
+if (window.ResizeObserver && schemeImgElem) new ResizeObserver(fitHotspots).observe(schemeImgElem);
 
 /* ===== позиции + хотспоты ===== */
 const tbody = document.querySelector('#posTable tbody');
