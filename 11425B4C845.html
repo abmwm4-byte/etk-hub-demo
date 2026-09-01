@@ -313,16 +313,21 @@
   .scheme-img-wrap { overflow: hidden; height: 100%; display: flex; align-items: center; justify-content: center; }
   .scheme-img.grabbing { cursor: grabbing; }
 
-  /* аккордеон «Детали узла» */
+  /* аккордеон «Детали узла»: явная кнопка действия справа */
   .acc-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
     background: none; border: 0; cursor: pointer; padding: 0; text-align: left; font-family: "Exo 2", sans-serif;
     font-size: 18px; font-weight: 700; color: var(--ink2); }
+  .acc-head:focus { outline: none; }
+  .acc-head:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
   .acc-head small { color: var(--dim); font-weight: 500; font-size: 13px; margin-left: 8px; font-family: Manrope, sans-serif; }
-  .acc-head .chev { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: center; color: var(--dim2); font-size: 12px;
-    transition: transform .2s ease, background .15s; }
-  .acc-head:hover .chev { background: var(--bg); }
-  .acc-head[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .acc-toggle { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0;
+    font-family: Manrope, sans-serif; font-size: 12.5px; font-weight: 700; letter-spacing: .02em;
+    padding: 8px 13px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--dim2);
+    transition: all .15s; }
+  .acc-toggle::after { content: '▴'; font-size: 11px; line-height: 1; transition: transform .2s; }
+  .acc-head:hover .acc-toggle { border-color: var(--dim); color: var(--ink2); }
+  .acc-head[aria-expanded="false"] .acc-toggle { background: var(--accent-tint2); border-color: var(--accent-mid); color: var(--accent-dark); }
+  .acc-head[aria-expanded="false"] .acc-toggle::after { transform: rotate(180deg); }
   .acc-body { display: none; margin-top: 16px; }
   .acc-body.open { display: block; }
 
@@ -433,7 +438,7 @@
   <div class="card" id="posCard">
     <button class="acc-head" id="posAccBtn" aria-expanded="true" aria-controls="posAccBody">
       <span>Детали узла<small id="posCount"></small></span>
-      <span class="chev" aria-hidden="true">▼</span>
+      <span class="acc-toggle" id="posAccToggle" aria-hidden="true">Свернуть</span>
     </button>
     <div class="acc-body open" id="posAccBody">
       <div class="table-scroll">
@@ -560,9 +565,11 @@
 /* ===== аккордеон «Детали узла» ===== */
 const posAccBtn = document.getElementById('posAccBtn');
 const posAccBody = document.getElementById('posAccBody');
+const posAccToggle = document.getElementById('posAccToggle');
 function setPosAcc(open) {
   posAccBtn.setAttribute('aria-expanded', open);
   posAccBody.classList.toggle('open', open);
+  if (posAccToggle) posAccToggle.textContent = open ? 'Свернуть' : 'Показать';
 }
 posAccBtn?.addEventListener('click', () => setPosAcc(posAccBtn.getAttribute('aria-expanded') !== 'true'));
 
