@@ -143,11 +143,11 @@
 
   .scheme-img { position: relative; height: 100%; }
   .scheme-img img { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
-  .hotspot { position: absolute; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%;
-    background: var(--accent); color: #fff; border: 2px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,.35);
-    font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: transform .12s ease, background .12s ease; font-family: inherit; padding: 0; z-index: 2; }
-  .hotspot:hover, .hotspot.active { background: var(--ink2); transform: translate(-50%,-50%) scale(1.28); z-index: 3; }
+  .hotspot { position: absolute; transform: translate(-50%, -50%); min-width: 24px; height: 24px; border-radius: 12px;
+    background: var(--accent); color: #fff; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; padding: 0 6px;
+    cursor: pointer; transition: all .15s ease; font-family: inherit; z-index: 2; white-space: nowrap; }
+  .hotspot:hover, .hotspot.active { background: var(--ink2); transform: translate(-50%,-50%) scale(1.15); z-index: 3; border-color: var(--ink2); }
   .tip { position: absolute; transform: translate(-50%, 0); background: var(--ink2); color: #fff; padding: 8px 12px; border-radius: 8px;
     font-size: 12.5px; font-weight: 600; white-space: normal; max-width: 240px; width: max-content; text-align: left; line-height: 1.35;
     pointer-events: none; opacity: 0; transition: opacity .12s; z-index: 4; box-shadow: var(--shadow-soft); }
@@ -248,7 +248,7 @@
     .search { display: none; }
     .vin { flex-direction: column; }
     .vin button { padding: 12px; }
-    .hotspot { width: 22px; height: 22px; font-size: 10px; border-width: 1.5px; }
+    .hotspot { min-width: 20px; height: 20px; font-size: 10px; padding: 0 4px; border-width: 1.5px; }
     .header-in { gap: 12px; }
     .dock-art, .dock-soc { display: none; }
 
@@ -294,6 +294,20 @@
     #analogTable td:nth-child(5) { width: auto; }
     #analogTable .save { order: 0; }
   }
+
+  .scheme-controls { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
+  .scheme-controls button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: .15s; padding: 0; }
+  .scheme-controls button:hover { background: var(--bg); border-color: var(--dim); }
+  .scheme-img-wrap { overflow: hidden; height: 100%; position: relative; }
+  /* Accordion styles */
+  .accordion-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px 20px; background: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 700; color: var(--ink2); text-align: left; transition: background .15s; font-family: inherit; }
+  .accordion-trigger:hover { background: #fafafa; }
+  .accordion-trigger::after { content: '▼'; font-size: 12px; transition: transform .2s; }
+  .accordion-trigger.open::after { transform: rotate(180deg); }
+  .accordion-trigger.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
+  .accordion-content { display: none; padding: 0 0 20px 0; border: 1px solid var(--line); border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; background: #fff; }
+  .accordion-content.open { display: block; }
+  .accordion-content table { border: none; border-radius: 0; }
 </style>
 </head>
 <body>
@@ -486,7 +500,15 @@
   </div>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js"></script>
 <script>
+
+document.getElementById('posAccordionBtn')?.addEventListener('click', function() {
+  this.classList.toggle('open');
+  document.getElementById('posAccordion').classList.toggle('open');
+});
+
 
 document.querySelectorAll('.prod-tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1319,6 +1341,22 @@ const TIER_NOTES = {
   all: 'Все аналоги разом. Оригинал BMW всегда доступен на этой странице выше — выбор за вами.',
 };
 const PRICE_OE = 3210;
+
+
+const schemeImgElem = document.getElementById('schemeImg');
+if (schemeImgElem && typeof Panzoom !== 'undefined') {
+  const panzoom = Panzoom(schemeImgElem, {
+    maxScale: 4,
+    minScale: 1,
+    contain: 'outside',
+    step: 0.3
+  });
+  const pzWrap = document.getElementById('schemeWrap');
+  pzWrap.addEventListener('wheel', panzoom.zoomWithWheel);
+  document.getElementById('zoomIn').addEventListener('click', panzoom.zoomIn);
+  document.getElementById('zoomOut').addEventListener('click', panzoom.zoomOut);
+  document.getElementById('zoomReset').addEventListener('click', panzoom.reset);
+}
 
 /* ===== позиции + хотспоты ===== */
 const tbody = document.querySelector('#posTable tbody');
