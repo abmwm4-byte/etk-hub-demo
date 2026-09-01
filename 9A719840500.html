@@ -144,7 +144,7 @@
   .scheme-tag { position: absolute; top: 12px; left: 14px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 100px; z-index: 5; display: none; }
   .scheme-tag.on { display: block; }
 
-  .scheme-img { position: relative; height: 100%; }
+  .scheme-img { position: relative; width: 100%; height: 100%; }
   .scheme-img img { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
   .hotspot { position: absolute; transform: translate(-50%, -50%); min-width: var(--hs, 24px); height: var(--hs, 24px);
     border-radius: calc(var(--hs, 24px) / 2);
@@ -376,7 +376,7 @@
         <!--@SCHEME_SLIDE-->
 <div class="slide on" data-type="scheme">
           <div class="scheme-img-wrap">
-            <div class="scheme-img" id="schemeImg" style="aspect-ratio: 1379 / 2093; max-height: 100%; max-width: 100%;">
+            <div class="scheme-img" id="schemeImg">
               <img src="img/vag_PO_P52104100.png" alt="Схема узла: Узел 104100 — ETK 104100 · U/1052"
                    width="1379" height="2093" fetchpriority="high">
             </div>
@@ -1424,20 +1424,30 @@ if (schemeImgElem && window.Panzoom) {
   document.getElementById('zoomReset')?.addEventListener('click', () => pz.reset({ animate: true }));
 }
 
-/* размер хотспотов под масштаб показанной схемы */
-function fitHotspots() {
-  if (!schemeImgElem) return;
-  const w = schemeImgElem.clientWidth;
-  if (!w) return;
-  const hs = Math.round(Math.max(16, Math.min(28, w / SCHEME_W * 26)));
+/* раскладка хотспотов по фактическому прямоугольнику схемы (учёт letterbox-полей) */
+function layoutScheme() {
+  if (!schemeImgElem || typeof SCHEME_W === 'undefined') return;
+  const W = schemeImgElem.clientWidth, H = schemeImgElem.clientHeight;
+  if (!W || !H) return;
+  const s = Math.min(W / SCHEME_W, H / SCHEME_H);
+  const offX = (W - SCHEME_W * s) / 2, offY = (H - SCHEME_H * s) / 2;
+  const hs = Math.round(Math.max(16, Math.min(28, s * 26)));
   schemeImgElem.style.setProperty('--hs', hs + 'px');
+  if (typeof schemeSpots === 'undefined') return;
+  schemeSpots.forEach(({ b, tip, cx, cy }) => {
+    b.style.left = (offX + cx * s) + 'px';
+    b.style.top = (offY + cy * s) + 'px';
+    tip.style.left = (offX + cx * s) + 'px';
+    tip.style.top = (offY + cy * s + 18) + 'px';
+  });
 }
-fitHotspots();
-if (window.ResizeObserver && schemeImgElem) new ResizeObserver(fitHotspots).observe(schemeImgElem);
+if (window.ResizeObserver && schemeImgElem) new ResizeObserver(() => layoutScheme()).observe(schemeImgElem);
 
 /* ===== позиции + хотспоты ===== */
 const tbody = document.querySelector('#posTable tbody');
 const schemeImg = document.getElementById('schemeImg');
+const schemeSpots = [];
+layoutScheme();
 
 POSITIONS.forEach((p, i) => {
   const tr = document.createElement('tr');
@@ -1455,19 +1465,16 @@ POSITIONS.forEach((p, i) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'hotspot'; b.dataset.i = i;
-    b.style.left = (cx / SCHEME_W * 100) + '%';
-    b.style.top = (cy / SCHEME_H * 100) + '%';
     b.textContent = p.pos;
     b.setAttribute('aria-label', `Позиция ${p.pos}: ${p.name}`);
 
     const tip = document.createElement('div');
     tip.className = 'tip';
-    tip.style.left = (cx / SCHEME_W * 100) + '%';
-    tip.style.top = `calc(${(cy / SCHEME_H * 100)}% + 18px)`;
     const tipName = p.status === 'old' ? p.name.split('—')[0].trim() : p.name;
     const tipSub = p.status === 'old' ? `${p.art} · устаревший номер, не поставляется` : `${p.art} · ${p.price}`;
     tip.innerHTML = `${p.pos} · ${tipName}<small>${tipSub}</small>`;
     schemeImg.appendChild(tip);
+    schemeSpots.push({ b, tip, cx, cy });
 
     b.addEventListener('mouseenter', () => { hl(i, true); tip.classList.add('on'); });
     b.addEventListener('mouseleave', () => { hl(i, false); tip.classList.remove('on'); });
@@ -1487,6 +1494,7 @@ POSITIONS.forEach((p, i) => {
     hl(i, true); setTimeout(() => hl(i, false), 1600);
   });
 });
+layoutScheme();
 
 function hl(i, on) {
   tbody.children[i].classList.toggle('hl', on);
