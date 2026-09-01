@@ -203,11 +203,11 @@
 
   /* аналоги: фиксированная геометрия колонок — при смене таба меняются только данные */
   #analogTable { table-layout: fixed; }
-  #analogTable th:nth-child(1), #analogTable td:nth-child(1) { width: 34%; }
-  #analogTable th:nth-child(2), #analogTable td:nth-child(2) { width: 24%; }
-  #analogTable th:nth-child(3), #analogTable td:nth-child(3) { width: 15%; }
+  #analogTable th:nth-child(1), #analogTable td:nth-child(1) { width: 28%; }
+  #analogTable th:nth-child(2), #analogTable td:nth-child(2) { width: 22%; }
+  #analogTable th:nth-child(3), #analogTable td:nth-child(3) { width: 13%; }
   #analogTable th:nth-child(4), #analogTable td:nth-child(4) { width: 17%; }
-  #analogTable th:nth-child(5), #analogTable td:nth-child(5) { width: 10%; }
+  #analogTable th:nth-child(5), #analogTable td:nth-child(5) { width: 20%; }
 
   /* tabs */
   .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -252,7 +252,7 @@
     .header-in { gap: 12px; }
     .dock-art, .dock-soc { display: none; }
 
-    /* ===== все таблицы данных <span class="sep">/</span> карточки ===== */
+    /* ===== все таблицы данных → карточки ===== */
     .dt thead { display: none; }
     .dt, .dt tbody { display: block; }
     .dt tr { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
@@ -295,19 +295,28 @@
     #analogTable .save { order: 0; }
   }
 
-  .scheme-controls { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
+  /* зум-контролы схемы (живут внутри слайда схемы — прячутся вместе с ним) */
+  .scheme-controls { position: absolute; bottom: 14px; right: 14px; display: flex; gap: 8px; z-index: 10; }
   .scheme-controls button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: .15s; padding: 0; }
   .scheme-controls button:hover { background: var(--bg); border-color: var(--dim); }
-  .scheme-img-wrap { overflow: hidden; height: 100%; position: relative; }
-  /* Accordion styles */
-  .accordion-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px 20px; background: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 700; color: var(--ink2); text-align: left; transition: background .15s; font-family: inherit; }
-  .accordion-trigger:hover { background: #fafafa; }
-  .accordion-trigger::after { content: '▼'; font-size: 12px; transition: transform .2s; }
-  .accordion-trigger.open::after { transform: rotate(180deg); }
-  .accordion-trigger.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
-  .accordion-content { display: none; padding: 0 0 20px 0; border: 1px solid var(--line); border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; background: #fff; }
-  .accordion-content.open { display: block; }
-  .accordion-content table { border: none; border-radius: 0; }
+  .scheme-img-wrap { overflow: hidden; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .scheme-img.grabbing { cursor: grabbing; }
+
+  /* аккордеон «Детали узла» */
+  .acc-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+    background: none; border: 0; cursor: pointer; padding: 0; text-align: left; font-family: "Exo 2", sans-serif;
+    font-size: 18px; font-weight: 700; color: var(--ink2); }
+  .acc-head small { color: var(--dim); font-weight: 500; font-size: 13px; margin-left: 8px; font-family: Manrope, sans-serif; }
+  .acc-head .chev { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; color: var(--dim2); font-size: 12px;
+    transition: transform .2s ease, background .15s; }
+  .acc-head:hover .chev { background: var(--bg); }
+  .acc-head[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .acc-body { display: none; margin-top: 16px; }
+  .acc-body.open { display: block; }
+
+  /* ячейка действий в аналогах */
+  .act-cell { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
 </style>
 </head>
 <body>
@@ -341,14 +350,20 @@
         <div class="gal-count" id="galCount">1 / 1</div>
         <div class="scheme-tag on" id="schemeTag">Схема узла ETK</div>
         <button class="gal-nav prev" id="galPrev" aria-label="Назад">←</button>
-        <button class="gal-nav next" id="galNext" aria-label="Вперёд"><span class="sep">/</span></button>
+        <button class="gal-nav next" id="galNext" aria-label="Вперёд">→</button>
 
         <!--@SCHEME_SLIDE-->
 <div class="slide on" data-type="scheme">
-          <div class="scheme-img" id="schemeImg"
-               style="aspect-ratio: 800 / 560; max-height: 100%; max-width: 100%; margin: 0 auto; top: 50%; transform: translateY(-50%);">
-            <img src="https://academy-etk.online/images/497033_z.jpg" alt="Схема узла: Масляный фильтр смаз.сист.,теплообменник — ETK 11_6422"
-                 width="800" height="560" fetchpriority="high">
+          <div class="scheme-img-wrap">
+            <div class="scheme-img" id="schemeImg" style="aspect-ratio: 800 / 560; max-height: 100%; max-width: 100%;">
+              <img src="https://academy-etk.online/images/497033_z.jpg" alt="Схема узла: Масляный фильтр смаз.сист.,теплообменник — ETK 11_6422"
+                   width="800" height="560" fetchpriority="high">
+            </div>
+          </div>
+          <div class="scheme-controls">
+            <button id="zoomIn" type="button" aria-label="Увеличить">+</button>
+            <button id="zoomOut" type="button" aria-label="Уменьшить">−</button>
+            <button id="zoomReset" type="button" aria-label="Сбросить масштаб">↺</button>
           </div>
         </div>
         <!--/@SCHEME_SLIDE-->
@@ -400,29 +415,59 @@
   <!-- ДАЛЬШЕ ВО ВСЮ ШИРИНУ -->
 
   <div class="card" id="posCard">
-    <h2>Детали узла</h2>
-    <div class="table-scroll">
-    <table id="posTable" class="dt">
-      <thead><tr><th>Поз.</th><th>Артикул</th><th>Деталь</th><th>Цена у дилера</th><th>Статус</th><th></th></tr></thead>
-      <tbody></tbody>
-    </table>
-    </div>
-    <div class="note">У позиции 02 два номера: BMW больше не поставляет 11 42 7 826 799 — вместо него заказывайте действующий 11 42 5B4C845. Если сомневаетесь, какой номер у вашей машины — проверьте по VIN.</div>
-  </div>
-
-  <div class="card">
-    <h2>С этим узлом меняют</h2>
-    <div class="table-scroll">
-    <table id="crossTable" class="dt">
-      <tr><td style="width:36px"><b>05</b></td><td class="pname">Комплект уплотнительных прокладок<small>рекомендуем при каждой замене фильтра</small></td><td class="art">11 42 8583896</td><td class="pr">1 190 ₽</td><td style="text-align:right"><button class="add">+ В корзину</button></td></tr>
-      <tr><td><b>08</b></td><td class="pname">Болт крышки фильтра<small>одноразовый, затяжка с моментом</small></td><td class="art">11 42 8585734</td><td class="pr">390 ₽</td><td style="text-align:right"><button class="add">+ В корзину</button></td></tr>
-      <tr><td><b>03</b></td><td class="pname">Крышка масляного фильтра<small>если треснула резьба или потеряна</small></td><td class="art">11 42 7926064</td><td class="pr">2 990 ₽</td><td style="text-align:right"><button class="add">+ В корзину</button></td></tr>
-    </table>
+    <button class="acc-head" id="posAccBtn" aria-expanded="true" aria-controls="posAccBody">
+      <span>Детали узла<small id="posCount"></small></span>
+      <span class="chev" aria-hidden="true">▼</span>
+    </button>
+    <div class="acc-body open" id="posAccBody">
+      <div class="table-scroll">
+      <table id="posTable" class="dt">
+        <thead><tr><th>Поз.</th><th>Артикул</th><th>Деталь</th><th>Цена у дилера</th><th>Статус</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      </div>
+      <div class="note">У позиции 02 два номера: BMW больше не поставляет 11 42 7 826 799 — вместо него заказывайте действующий 11 42 5B4C845. Если сомневаетесь, какой номер у вашей машины — проверьте по VIN.</div>
     </div>
   </div>
 
-  <div class="card">
-    <h2>История артикула <small>официальные замены номера BMW</small></h2>
+  <!--@CROSS_BLOCK-->
+
+        <!--/@CROSS_BLOCK-->
+
+  <div class="prod-tabs">
+    <div class="prod-tabs-header">
+      <button class="prod-tab-btn active" data-target="tab-analogs" type="button">Аналоги<!--@ANALOGS_COUNT-->
+ (60)
+        <!--/@ANALOGS_COUNT--></button>
+      <button class="prod-tab-btn" data-target="tab-history" type="button">История артикула</button>
+      <button class="prod-tab-btn" data-target="tab-fit" type="button">Применимость<!--@FIT_COUNT-->
+ (430)
+        <!--/@FIT_COUNT--></button>
+    </div>
+
+    <div class="prod-tab-content active" id="tab-analogs">
+    <div class="card">
+    <h2>Аналоги <small>по OE-номеру из TecDoc</small></h2>
+    <div class="tabs" id="tierTabs">
+      <div class="tab active" data-tier="oem">OEM-качество</div>
+      <div class="tab" data-tier="mid">Средний сегмент</div>
+      <div class="tab" data-tier="budget">Бюджет</div>
+      <div class="tab" data-tier="all">Все</div>
+    </div>
+    <div class="tier-note" id="tierNote"></div>
+    <div class="table-scroll">
+    <table id="analogTable" class="dt">
+      <thead><tr><th>Бренд</th><th>Артикул</th><th>Цена</th><th>К оригиналу</th><th></th></tr></thead>
+      <tbody id="analogRows"></tbody>
+    </table>
+    </div>
+    <div class="note">Кнопка «Купить» кладёт аналог в корзину сразу; «открыть» — переход в карточку аналога со ссылкой обратно на оригинал.</div>
+    </div>
+    </div>
+
+    <div class="prod-tab-content" id="tab-history">
+    <div class="card">
+    <h2>История артикула <small>официальные замены номера</small></h2>
     <div class="table-scroll">
     <table id="rplTable" class="dt">
       <thead><tr><th>Артикул</th><th>Статус</th><th>Цена у дилера</th><th></th></tr></thead>
@@ -450,30 +495,13 @@
       </tbody>
     </table>
     </div>
-    <div class="note">BMW иногда меняет номера деталей. Если номер из вашей сервисной книжки в списке выше со статусом «не поставляется» — просто закажите актуальный: это та же деталь с новым номером.</div>
-  </div>
-
-  <div class="card">
-    <h2>Аналоги <small>40+ вариантов по OE-номеру 11 42 7 826 799</small></h2>
-    <div class="tabs" id="tierTabs">
-      <div class="tab active" data-tier="oem">OEM-качество</div>
-      <div class="tab" data-tier="mid">Средний сегмент</div>
-      <div class="tab" data-tier="budget">Бюджет</div>
-      <div class="tab" data-tier="all">Все</div>
+    <div class="note">Производитель иногда меняет номера деталей. Если номер из вашей сервисной книжки в списке выше со статусом «не поставляется» — просто закажите актуальный: это та же деталь с новым номером.</div>
     </div>
-    <div class="tier-note" id="tierNote"></div>
-    <div class="table-scroll">
-    <table id="analogTable" class="dt">
-      <thead><tr><th>Бренд</th><th>Артикул</th><th>Цена</th><th>К оригиналу</th><th></th></tr></thead>
-      <tbody id="analogRows"></tbody>
-    </table>
     </div>
-    <div class="note">В карточке каждого аналога есть ссылка «к оригиналу BMW 11 42 5B4C845» — можно сравнить и вернуться сюда.</div>
-  </div>
 
-  <!-- SEO: применимость внизу -->
+    <div class="prod-tab-content" id="tab-fit">
   <div class="card">
-    <h2>Применимость <small>430 модификаций BMW · точная проверка по VIN выше</small></h2>
+    <h2>Применимость <small>точная проверка по VIN выше</small></h2>
     <div class="seo-text">
       <p>Комплект сменного элемента масляного фильтра BMW 11 42 5B4C845 (прежние номера: 11 42 8 583 898, 11 42 7 826 799) применяется на двигателях B57, B58 и B48 в моделях BMW X3 (G01), X4 (G02), X5 (G05), X6 (G06), X7 (G07), 3-серии (G20/G21), 5-серии (G30/G31), 7-серии (G11/G12), 8-серии (G14–G16) и 6 GT (G32) 2017–2026 годов выпуска.</p>
       <p>При замене масляного фильтра на двигателе B57 (объём масла 7,0 л) рекомендуется одновременно менять комплект уплотнительных прокладок. Для точной проверки совместимости с вашим автомобилем — с учётом даты производства и комплектации — воспользуйтесь проверкой по VIN.</p>
@@ -484,6 +512,8 @@
       <span class="fit">540dX (G31)</span><span class="fit">X7 40dX (G07)</span><span class="fit">840dX (G14)</span>
       <span class="fit">730d (G11)</span><span class="fit">740LdX (G12)</span><span class="fit">X3 30dX (G01)</span>
       <span class="fit">X4 M40dX (G02)</span><span class="fit">640dX (G32)</span><span class="fit">+ ещё 415 модификаций</span>
+    </div>
+  </div>
     </div>
   </div>
 
@@ -511,10 +541,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js"></script>
 <script>
 
-document.getElementById('posAccordionBtn')?.addEventListener('click', function() {
-  this.classList.toggle('open');
-  document.getElementById('posAccordion').classList.toggle('open');
-});
+/* ===== аккордеон «Детали узла» ===== */
+const posAccBtn = document.getElementById('posAccBtn');
+const posAccBody = document.getElementById('posAccBody');
+function setPosAcc(open) {
+  posAccBtn.setAttribute('aria-expanded', open);
+  posAccBody.classList.toggle('open', open);
+}
+posAccBtn?.addEventListener('click', () => setPosAcc(posAccBtn.getAttribute('aria-expanded') !== 'true'));
 
 
 document.querySelectorAll('.prod-tab-btn').forEach(btn => {
@@ -973,19 +1007,20 @@ const TIER_NOTES = {
 const PRICE_OE = 2445;
 
 
+/* ===== зум/пан схемы ===== */
 const schemeImgElem = document.getElementById('schemeImg');
-if (schemeImgElem && typeof Panzoom !== 'undefined') {
-  const panzoom = Panzoom(schemeImgElem, {
-    maxScale: 4,
-    minScale: 1,
-    contain: 'outside',
-    step: 0.3
+if (schemeImgElem && window.Panzoom) {
+  const pz = Panzoom(schemeImgElem, {
+    maxScale: 5, minScale: 1, step: 0.3, contain: 'outside',
+    cursor: 'grab', excludeClass: 'hotspot',
   });
-  const pzWrap = document.getElementById('schemeWrap');
-  pzWrap.addEventListener('wheel', panzoom.zoomWithWheel);
-  document.getElementById('zoomIn').addEventListener('click', panzoom.zoomIn);
-  document.getElementById('zoomOut').addEventListener('click', panzoom.zoomOut);
-  document.getElementById('zoomReset').addEventListener('click', panzoom.reset);
+  const slideEl = schemeImgElem.closest('.slide');
+  slideEl.addEventListener('wheel', pz.zoomWithWheel, { passive: false });
+  schemeImgElem.addEventListener('panzoomstart', () => schemeImgElem.classList.add('grabbing'));
+  schemeImgElem.addEventListener('panzoomend', () => schemeImgElem.classList.remove('grabbing'));
+  document.getElementById('zoomIn')?.addEventListener('click', () => pz.zoomIn());
+  document.getElementById('zoomOut')?.addEventListener('click', () => pz.zoomOut());
+  document.getElementById('zoomReset')?.addEventListener('click', () => pz.reset());
 }
 
 /* ===== позиции + хотспоты ===== */
@@ -1024,7 +1059,10 @@ POSITIONS.forEach((p, i) => {
 
     b.addEventListener('mouseenter', () => { hl(i, true); tip.classList.add('on'); });
     b.addEventListener('mouseleave', () => { hl(i, false); tip.classList.remove('on'); });
-    b.addEventListener('click', () => tbody.children[i].scrollIntoView({ block: 'center', behavior: 'smooth' }));
+    b.addEventListener('click', () => {
+      if (posAccBtn && posAccBtn.getAttribute('aria-expanded') !== 'true') setPosAcc(true);
+      tbody.children[i].scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
     schemeImg.appendChild(b);
   });
 
@@ -1043,11 +1081,13 @@ function hl(i, on) {
   document.querySelectorAll(`.hotspot[data-i="${i}"]`).forEach(h => h.classList.toggle('active', on));
 }
 
-/* ETL: страницы без схемы/позиций (напр. VAG) — прячем блок */
+/* ETL: страницы без схемы/позиций — прячем блок */
 if (!POSITIONS.length) {
   document.getElementById('posCard').style.display = 'none';
   document.getElementById('schemeLegend').style.display = 'none';
-  document.getElementById('tabBtnScheme').style.display = 'none';
+} else {
+  const pc = document.getElementById('posCount');
+  if (pc) pc.textContent = POSITIONS.length + ' поз.';
 }
 
 /* ===== галерея ===== */
@@ -1100,7 +1140,7 @@ function renderAnalogs(tier) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td class="brand-cell">${brand}</td><td class="art">${num}</td>
       <td class="pr">${price.toLocaleString('ru-RU')} ₽</td><td class="save">−${save}% (−${saveSum.toLocaleString('ru-RU')} ₽)</td>
-      <td style="text-align:right"><span class="link-cell">открыть <span class="sep">/</span></span></td>`;
+      <td><div class="act-cell"><button class="add">Купить</button><span class="link-cell">открыть →</span></div></td>`;
     box.appendChild(tr);
   });
   document.getElementById('tierNote').textContent = TIER_NOTES[tier];
