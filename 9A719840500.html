@@ -1383,16 +1383,24 @@ const PRICE_OE = 3210;
 const schemeImgElem = document.getElementById('schemeImg');
 if (schemeImgElem && window.Panzoom) {
   const pz = Panzoom(schemeImgElem, {
-    maxScale: 5, minScale: 1, step: 0.12, animate: true,
+    maxScale: 5, minScale: 1, disableZoom: false,
     panOnlyWhenZoomed: true, cursor: 'grab', excludeClass: 'hotspot',
   });
   const slideEl = schemeImgElem.closest('.slide');
-  slideEl.addEventListener('wheel', pz.zoomWithWheel, { passive: false });
+  // плавный зум: масштаб пропорционален величине жеста, фокус — в точке курсора
+  slideEl.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;
+    const factor = Math.exp(-delta * 0.0022);
+    const next = Math.min(5, Math.max(1, pz.getScale() * factor));
+    pz.zoom(next, { focal: { x: e.clientX, y: e.clientY }, animate: false });
+  }, { passive: false });
   schemeImgElem.addEventListener('panzoomstart', () => schemeImgElem.classList.add('grabbing'));
   schemeImgElem.addEventListener('panzoomend', () => schemeImgElem.classList.remove('grabbing'));
-  document.getElementById('zoomIn')?.addEventListener('click', () => pz.zoomIn());
-  document.getElementById('zoomOut')?.addEventListener('click', () => pz.zoomOut());
-  document.getElementById('zoomReset')?.addEventListener('click', () => pz.reset());
+  const zoomBy = (k) => pz.zoom(Math.min(5, Math.max(1, pz.getScale() * k)), { animate: true });
+  document.getElementById('zoomIn')?.addEventListener('click', () => zoomBy(1.35));
+  document.getElementById('zoomOut')?.addEventListener('click', () => zoomBy(1 / 1.35));
+  document.getElementById('zoomReset')?.addEventListener('click', () => pz.reset({ animate: true }));
 }
 
 /* размер хотспотов под масштаб показанной схемы */
