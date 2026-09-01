@@ -452,7 +452,9 @@
         <tbody></tbody>
       </table>
       </div>
-      <div class="note">У позиции 02 два номера: BMW больше не поставляет 11 42 7 826 799 — вместо него заказывайте действующий 11 42 5B4C845. Если сомневаетесь, какой номер у вашей машины — проверьте по VIN.</div>
+      <!--@POS_NOTE-->
+
+        <!--/@POS_NOTE-->
     </div>
   </div>
 
@@ -1576,11 +1578,12 @@ function renderAnalogs(tier) {
   box.innerHTML = '';
   const list = tier === 'all' ? [...ANALOGS.oem, ...ANALOGS.mid, ...ANALOGS.budget] : ANALOGS[tier];
   list.forEach(([brand, num, price]) => {
-    const save = Math.round((1 - price / PRICE_OE) * 100);
-    const saveSum = PRICE_OE - price;
+    const save = PRICE_OE > 0 && price ? Math.round((1 - price / PRICE_OE) * 100) : null;
+    const saveSum = price ? PRICE_OE - price : 0;
     const tr = document.createElement('tr');
     tr.innerHTML = `<td class="brand-cell">${brand}</td><td class="art">${num}</td>
-      <td class="pr">${price.toLocaleString('ru-RU')} ₽</td><td class="save">−${save}% (−${saveSum.toLocaleString('ru-RU')} ₽)</td>
+      <td class="pr">${price ? price.toLocaleString('ru-RU') + ' ₽' : 'по запросу'}</td>
+      <td class="save">${save !== null ? `−${save}% (−${saveSum.toLocaleString('ru-RU')} ₽)` : '—'}</td>
       <td><div class="act-cell"><button class="add">Купить</button><span class="link-cell">открыть →</span></div></td>`;
     box.appendChild(tr);
   });
