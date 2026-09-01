@@ -1442,14 +1442,24 @@ function layoutScheme() {
   if (!W || !H) return;
   const s = Math.min(W / SCHEME_W, H / SCHEME_H);
   const offX = (W - SCHEME_W * s) / 2, offY = (H - SCHEME_H * s) / 2;
-  const hs = Math.round(Math.max(16, Math.min(28, s * 26)));
+  const hs = Math.round(Math.max(15, Math.min(28, s * 24)));
   schemeImgElem.style.setProperty('--hs', hs + 'px');
   if (typeof schemeSpots === 'undefined') return;
-  schemeSpots.forEach(({ b, tip, cx, cy }) => {
-    b.style.left = (offX + cx * s) + 'px';
-    b.style.top = (offY + cy * s) + 'px';
-    tip.style.left = (offX + cx * s) + 'px';
-    tip.style.top = (offY + cy * s + 18) + 'px';
+  // ETKA нередко ставит метки почти в одну точку — разводим близкие маркеры, чтобы не слипались
+  const placed = [];
+  const ordered = [...schemeSpots].sort((a, b2) => (a.cy - b2.cy) || (a.cx - b2.cx));
+  ordered.forEach(({ b, tip, cx, cy }) => {
+    let x = offX + cx * s, y = offY + cy * s;
+    for (let tries = 0; tries < 8; tries++) {
+      const clash = placed.find(q => Math.abs(x - q.x) < hs * 0.85 && Math.abs(y - q.y) < hs * 0.85);
+      if (!clash) break;
+      x = clash.x + hs * 0.7; y = clash.y + hs * 0.45;
+    }
+    placed.push({ x, y });
+    b.style.left = x + 'px';
+    b.style.top = y + 'px';
+    tip.style.left = x + 'px';
+    tip.style.top = (y + hs * 0.75) + 'px';
   });
 }
 if (window.ResizeObserver && schemeImgElem) new ResizeObserver(() => layoutScheme()).observe(schemeImgElem);
