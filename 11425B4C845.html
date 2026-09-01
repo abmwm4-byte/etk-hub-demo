@@ -41,7 +41,7 @@
     --green: #2aab6b; --green-tint: #e9f8f0;
     --red: #ff2f32; --red-tint: #f9e1e7;
     --r: 10px;
-    --shadow-soft: 0 2px 8px #0000001a;
+    --shadow-soft: 0 8px 24px #2223240f;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -61,11 +61,14 @@
   .phone small { display: block; color: var(--dim); font-weight: 500; font-size: 11px; }
 
   .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 60px; }
-  .crumbs { color: var(--dim); font-size: 13px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-weight: 500; }
-  .crumbs a { color: var(--dim); text-decoration: none; } .crumbs span.sep { color: var(--line); font-size: 14px; }
-  .crumbs a:hover { color: var(--accent); }
+  .crumbs { color: var(--dim); font-size: 14px; margin: 30px 0 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-weight: 500; }
+  .crumbs a { color: var(--dim); text-decoration: underline; text-underline-offset: 2px; }
+  .crumbs a:hover { color: var(--ink2); }
+  .crumbs span:last-child { color: var(--ink2); }
+  .crumbs span.sep { color: var(--line); font-size: 14px; }
 
-  h1 { font-family: "Exo 2", sans-serif; font-size: 26px; font-weight: 700; line-height: 1.25; margin-bottom: 10px; color: var(--ink2); }
+  .title-top { color: #8e8e93; font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  h1 { font-family: "Exo 2", sans-serif; font-size: 26px; font-weight: 500; line-height: 1.1; margin-bottom: 10px; color: var(--ink2); }
   .sub { color: var(--dim2); margin-bottom: 20px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
   .sub b { color: var(--ink); }
 
@@ -88,13 +91,13 @@
   .panel .card h2 { font-size: 15px; margin-bottom: 10px; }
 
   /* buy box */
-  .price { font-family: "Exo 2", sans-serif; font-size: 26px; font-weight: 800; color: var(--ink2); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .price small { font-size: 14px; color: var(--green); font-weight: 700; font-family: Manrope, sans-serif; }
+  .price { font-family: "Exo 2", sans-serif; font-size: 32px; font-weight: 500; text-transform: uppercase; color: var(--ink2); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .price small { font-size: 14px; color: #087a43; font-weight: 500; font-family: Manrope, sans-serif; text-transform: none; }
   .dealer { color: var(--dim); font-size: 12.5px; margin: 4px 0 12px; }
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 24px; border: 0; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; font-family: inherit; transition: all .15s; min-height: 48px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 0 24px; border: 0; border-radius: 10px; font-size: 16px; font-weight: 500; text-transform: uppercase; cursor: pointer; text-decoration: none; font-family: inherit; transition: background-color .2s; min-height: 44px; }
   .btn.buy { background: var(--accent); color: #fff; }
-  .btn.buy:hover { background: var(--accent-dark); box-shadow: 0 4px 14px rgba(253,103,16,.2); }
-  .btn.ghost { background: transparent; color: var(--accent); margin-top: 8px; font-weight: 600; border: 1px solid var(--accent); min-height: 44px; font-size: 14px; }
+  .btn.buy:hover { background: var(--accent-dark); }
+  .btn.ghost { background: #fff; color: var(--accent); margin-top: 8px; font-weight: 500; border: 1.5px solid var(--accent); min-height: 42px; font-size: 14px; }
   .btn.ghost:hover { background: var(--accent-tint2); }
 
   /* vin */
@@ -166,11 +169,14 @@
 
   
   /* tabs layout */
-  .prod-tabs { margin-top: 30px; }
-  .prod-tabs-header { display: flex; gap: 24px; border-bottom: 1px solid var(--line); margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .prod-tab-btn { background: none; border: none; padding: 0 0 14px; font-size: 16px; font-weight: 600; color: var(--dim); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: .15s; white-space: nowrap; font-family: inherit; }
-  .prod-tab-btn:hover { color: var(--ink); }
-  .prod-tab-btn.active { color: var(--ink2); border-bottom-color: var(--accent); }
+  .prod-tabs { margin-top: 36px; }
+  .prod-tabs-header { display: flex; gap: 56px; border-bottom: 1px solid var(--line2); margin-bottom: 28px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .prod-tabs-header::-webkit-scrollbar { display: none; }
+  .prod-tab-btn { position: relative; background: none; border: none; padding: 0 0 14px; font-size: 14px; font-weight: 500; text-transform: uppercase; color: var(--dim); cursor: pointer; transition: color .2s; white-space: nowrap; font-family: inherit; }
+  .prod-tab-btn::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: transparent; }
+  .prod-tab-btn:hover { color: var(--ink2); }
+  .prod-tab-btn.active { color: var(--ink2); }
+  .prod-tab-btn.active::after { background: var(--accent); }
   .prod-tab-content { display: none; }
   .prod-tab-content.active { display: block; }
   .prod-tab-content .card { border: none; padding: 0; box-shadow: none; background: transparent; }
@@ -190,7 +196,7 @@
   .art { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--accent-dark); white-space: nowrap; font-weight: 600; }
   .art.dim { color: var(--dim); text-decoration: line-through; }
   .pr { font-weight: 700; white-space: nowrap; }
-  .add { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; font-weight: 700; font-size: 12.5px; font-family: inherit; white-space: nowrap; }
+  .add { padding: 7px 14px; border-radius: 10px; border: 1.5px solid var(--accent); background: #fff; color: var(--accent); cursor: pointer; font-weight: 500; text-transform: uppercase; font-size: 12.5px; font-family: inherit; white-space: nowrap; }
   .add:hover { background: var(--accent); color: #fff; }
   .pname { font-weight: 600; }
   .pname small { display: block; color: var(--dim); font-weight: 500; font-size: 12px; }
@@ -297,10 +303,13 @@
     #analogTable .save { order: 0; }
   }
 
-  /* зум-контролы схемы (живут внутри слайда схемы — прячутся вместе с ним) */
-  .scheme-controls { position: absolute; bottom: 14px; right: 14px; display: flex; gap: 8px; z-index: 10; }
-  .scheme-controls button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: .15s; padding: 0; }
-  .scheme-controls button:hover { background: var(--bg); border-color: var(--dim); }
+  /* зум-контролы схемы: компактная вертикальная стеклянная колонка поверх вьюера */
+  .scheme-controls { position: absolute; bottom: 14px; right: 12px; display: flex; flex-direction: column; gap: 6px; z-index: 10; }
+  .scheme-controls button { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--line);
+    background: rgba(255,255,255,.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500;
+    color: var(--ink2); box-shadow: 0 2px 8px rgba(0,0,0,.10); transition: .15s; padding: 0; }
+  .scheme-controls button:hover { background: #fff; border-color: var(--accent); color: var(--accent); }
   .scheme-img-wrap { overflow: hidden; height: 100%; display: flex; align-items: center; justify-content: center; }
   .scheme-img.grabbing { cursor: grabbing; }
 
@@ -338,6 +347,11 @@
 
   <nav class="crumbs"><a href="#">Главная</a> <span class="sep">/</span> <a href="#">Каталог</a> <span class="sep">/</span> <a href="#">BMW</a> <span class="sep">/</span> <span>К-т сменного элемента масляного фильтра</span></nav>
 
+  <div class="title-top">
+    <span>Артикул: <b style="color:var(--ink2)"><!--@ART2-->11 42 5B4C845<!--/@ART2--></b></span>
+    <span>☆ 0</span>
+    <span style="text-decoration:underline;color:var(--ink2)">0 отзывов</span>
+  </div>
   <h1>К-т сменного элемента масляного фильтра BMW</h1>
   <div class="sub">
     <span class="sub-text">Оригинальный артикул <b>11 42 5B4C845</b></span>
@@ -1023,7 +1037,7 @@ if (schemeImgElem && window.Panzoom) {
     const delta = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;
     const factor = Math.exp(-delta * 0.0022);
     const next = Math.min(5, Math.max(1, pz.getScale() * factor));
-    pz.zoom(next, { focal: { x: e.clientX, y: e.clientY }, animate: false });
+    pz.zoomToPoint(next, { clientX: e.clientX, clientY: e.clientY });
   }, { passive: false });
   schemeImgElem.addEventListener('panzoomstart', () => schemeImgElem.classList.add('grabbing'));
   schemeImgElem.addEventListener('panzoomend', () => schemeImgElem.classList.remove('grabbing'));
