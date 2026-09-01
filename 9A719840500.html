@@ -1418,6 +1418,17 @@ if (schemeImgElem && window.Panzoom) {
   }, { passive: false });
   schemeImgElem.addEventListener('panzoomstart', () => schemeImgElem.classList.add('grabbing'));
   schemeImgElem.addEventListener('panzoomend', () => schemeImgElem.classList.remove('grabbing'));
+  // хотспоты/тултипы держат размер на экране, не масштабируясь вместе со схемой
+  function rescaleSpots(s) {
+    if (!schemeImgElem) return;
+    const on = s > 1.01;
+    schemeImgElem.querySelectorAll('.hotspot').forEach(el =>
+      el.style.transform = on ? `translate(-50%,-50%) scale(${1 / s})` : '');
+    schemeImgElem.querySelectorAll('.tip').forEach(el =>
+      el.style.transform = on ? `translate(-50%,0) scale(${1 / s})` : '');
+  }
+  schemeImgElem.addEventListener('panzoomzoom', (e) => rescaleSpots(e.detail.scale));
+  schemeImgElem.addEventListener('panzoomreset', () => rescaleSpots(1));
   const zoomBy = (k) => pz.zoom(Math.min(5, Math.max(1, pz.getScale() * k)), { animate: true });
   document.getElementById('zoomIn')?.addEventListener('click', () => zoomBy(1.35));
   document.getElementById('zoomOut')?.addEventListener('click', () => zoomBy(1 / 1.35));
