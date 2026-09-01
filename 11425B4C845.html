@@ -32,12 +32,12 @@
 </script>
 <style>
   :root {
-    --ink: #222324; --ink2: #1c1c1c;
+    --ink: #222324; --ink2: #111827;
     --bg: #f6f6f6; --card: #ffffff;
     --line: #e5e5e6; --line2: #ececee;
     --dim: #95959d; --dim2: #7b7b84;
-    --accent: #fd6710; --accent-dark: #e55a0e;
-    --accent-tint: #ffefe6; --accent-tint2: #fff8f5; --accent-mid: #fea876;
+    --accent: #fd6710; --accent-dark: #e55a0d;
+    --accent-tint: #ffefe6; --accent-tint2: #fff8f5; --accent-mid: #fd8844;
     --green: #2aab6b; --green-tint: #e9f8f0;
     --red: #ff2f32; --red-tint: #f9e1e7;
     --r: 10px;
@@ -61,8 +61,8 @@
   .phone small { display: block; color: var(--dim); font-weight: 500; font-size: 11px; }
 
   .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 60px; }
-  .crumbs { color: var(--dim); font-size: 13px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px; }
-  .crumbs a { color: var(--dim); text-decoration: none; }
+  .crumbs { color: var(--dim); font-size: 13px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-weight: 500; }
+  .crumbs a { color: var(--dim); text-decoration: none; } .crumbs span.sep { color: var(--line); font-size: 14px; }
   .crumbs a:hover { color: var(--accent); }
 
   h1 { font-family: "Exo 2", sans-serif; font-size: 26px; font-weight: 700; line-height: 1.25; margin-bottom: 10px; color: var(--ink2); }
@@ -91,11 +91,11 @@
   .price { font-family: "Exo 2", sans-serif; font-size: 26px; font-weight: 800; color: var(--ink2); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
   .price small { font-size: 14px; color: var(--green); font-weight: 700; font-family: Manrope, sans-serif; }
   .dealer { color: var(--dim); font-size: 12.5px; margin: 4px 0 12px; }
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; border: 0; border-radius: var(--r); font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; font-family: inherit; transition: background .15s; min-height: 44px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 24px; border: 0; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; font-family: inherit; transition: all .15s; min-height: 48px; }
   .btn.buy { background: var(--accent); color: #fff; }
-  .btn.buy:hover { background: var(--accent-dark); }
-  .btn.ghost { background: var(--accent-tint2); color: var(--accent-dark); margin-top: 8px; font-weight: 700; border: 1px solid var(--accent-mid); min-height: 38px; font-size: 13px; }
-  .btn.ghost:hover { background: var(--accent-tint); }
+  .btn.buy:hover { background: var(--accent-dark); box-shadow: 0 4px 14px rgba(253,103,16,.2); }
+  .btn.ghost { background: transparent; color: var(--accent); margin-top: 8px; font-weight: 600; border: 1px solid var(--accent); min-height: 44px; font-size: 14px; }
+  .btn.ghost:hover { background: var(--accent-tint2); }
 
   /* vin */
   .vin { display: flex; gap: 8px; }
@@ -162,11 +162,24 @@
   .scheme-legend { color: var(--dim); font-size: 13px; margin-top: 12px; display: flex; align-items: center; gap: 6px; min-height: 20px; visibility: hidden; }
   .scheme-legend.on { visibility: visible; }
 
+  
+  /* tabs layout */
+  .prod-tabs { margin-top: 30px; }
+  .prod-tabs-header { display: flex; gap: 24px; border-bottom: 1px solid var(--line); margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prod-tab-btn { background: none; border: none; padding: 0 0 14px; font-size: 16px; font-weight: 600; color: var(--dim); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: .15s; white-space: nowrap; font-family: inherit; }
+  .prod-tab-btn:hover { color: var(--ink); }
+  .prod-tab-btn.active { color: var(--ink2); border-bottom-color: var(--accent); }
+  .prod-tab-content { display: none; }
+  .prod-tab-content.active { display: block; }
+  .prod-tab-content .card { border: none; padding: 0; box-shadow: none; background: transparent; }
+
   /* ===== tables ===== */
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  th { text-align: left; color: var(--dim); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding: 6px 8px; border-bottom: 2px solid var(--line); }
-  td { padding: 8px 8px; border-bottom: 1px solid var(--line2); vertical-align: middle; line-height: 1.35; }
+  th { text-align: left; color: var(--dim); font-weight: 600; font-size: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: #fafafa; }
+  td { padding: 14px 16px; border-bottom: 1px solid var(--line2); vertical-align: middle; line-height: 1.45; }
+  table { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; border-collapse: separate; border-spacing: 0; }
+  tr:last-child td { border-bottom: none; }
   tr:last-child td { border-bottom: 0; }
   th:nth-child(1), td:nth-child(1) { }
   tr.hl td { background: var(--accent-tint2); }
@@ -239,7 +252,7 @@
     .header-in { gap: 12px; }
     .dock-art, .dock-soc { display: none; }
 
-    /* ===== все таблицы данных → карточки ===== */
+    /* ===== все таблицы данных <span class="sep">/</span> карточки ===== */
     .dt thead { display: none; }
     .dt, .dt tbody { display: block; }
     .dt tr { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
@@ -298,7 +311,7 @@
 
 <div class="wrap">
 
-  <nav class="crumbs"><a href="#">Главная</a> → <a href="#">Каталог</a> → <a href="#">BMW</a> → <a href="#">Система смазки</a> → <span>Масляный фильтр B57</span></nav>
+  <nav class="crumbs"><a href="#">Главная</a> <span class="sep">/</span> <a href="#">Каталог</a> <span class="sep">/</span> <a href="#">BMW</a> <span class="sep">/</span> <a href="#">Система смазки</a> <span class="sep">/</span> <span>Масляный фильтр B57</span></nav>
 
   <h1>К-т сменного элемента масляного фильтра BMW</h1>
   <div class="sub">
@@ -314,7 +327,7 @@
         <div class="gal-count" id="galCount">1 / 1</div>
         <div class="scheme-tag on" id="schemeTag">Схема узла ETK</div>
         <button class="gal-nav prev" id="galPrev" aria-label="Назад">←</button>
-        <button class="gal-nav next" id="galNext" aria-label="Вперёд">→</button>
+        <button class="gal-nav next" id="galNext" aria-label="Вперёд"><span class="sep">/</span></button>
 
         <!--@SCHEME_SLIDE-->
 <div class="slide on" data-type="scheme">
@@ -481,6 +494,16 @@
 </div>
 
 <script>
+
+document.querySelectorAll('.prod-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.prod-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.prod-tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+
 const SCHEME_W = 800, SCHEME_H = 560;
 const POSITIONS = [
   {
@@ -986,6 +1009,7 @@ function hl(i, on) {
 if (!POSITIONS.length) {
   document.getElementById('posCard').style.display = 'none';
   document.getElementById('schemeLegend').style.display = 'none';
+  document.getElementById('tabBtnScheme').style.display = 'none';
 }
 
 /* ===== галерея ===== */
@@ -1038,7 +1062,7 @@ function renderAnalogs(tier) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td class="brand-cell">${brand}</td><td class="art">${num}</td>
       <td class="pr">${price.toLocaleString('ru-RU')} ₽</td><td class="save">−${save}% (−${saveSum.toLocaleString('ru-RU')} ₽)</td>
-      <td style="text-align:right"><span class="link-cell">открыть →</span></td>`;
+      <td style="text-align:right"><span class="link-cell">открыть <span class="sep">/</span></span></td>`;
     box.appendChild(tr);
   });
   document.getElementById('tierNote').textContent = TIER_NOTES[tier];
